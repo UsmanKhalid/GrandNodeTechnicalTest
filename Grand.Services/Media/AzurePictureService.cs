@@ -8,6 +8,7 @@ using Grand.Services.Configuration;
 using Grand.Services.Logging;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using QRCoder;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -25,6 +26,7 @@ namespace Grand.Services.Media
         private static BlobContainerClient container = null;
 
         private readonly GrandConfig _config;
+        private readonly QRCodeGenerator _qrCodeGenerator;
         #endregion
 
         #region Ctor
@@ -36,7 +38,7 @@ namespace Grand.Services.Media
             IWebHostEnvironment hostingEnvironment,
             IStoreContext storeContext,
             ICacheBase cacheManager,
-            MediaSettings mediaSettings,
+            MediaSettings mediaSettings,          
             GrandConfig config)
             : base(pictureRepository,
                 settingService,
@@ -45,7 +47,8 @@ namespace Grand.Services.Media
                 hostingEnvironment,
                 storeContext,
                 cacheManager,
-                mediaSettings)
+                mediaSettings
+                )
         {
             _config = config;
 
@@ -57,7 +60,7 @@ namespace Grand.Services.Media
                 throw new Exception("Azure end point for BLOB is not specified");
 
             container = new BlobContainerClient(_config.AzureBlobStorageConnectionString, _config.AzureBlobStorageContainerName);
-
+            _qrCodeGenerator = new QRCodeGenerator();
         }
 
         #endregion

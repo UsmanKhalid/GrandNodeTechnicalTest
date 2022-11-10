@@ -14,6 +14,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Grand.Core.Configuration;
+using QRCoder;
 
 namespace Grand.Services.Media
 {
@@ -29,7 +30,7 @@ namespace Grand.Services.Media
         private readonly string _distributionDomainName;
         private bool _bucketExist = false;
         private readonly IAmazonS3 _s3Client;
-
+        private readonly QRCodeGenerator _qrCodeGenerator;
         #endregion
 
         #region Ctor
@@ -42,6 +43,7 @@ namespace Grand.Services.Media
             IStoreContext storeContext,
             ICacheBase cacheManager,
             MediaSettings mediaSettings,
+            
             GrandConfig config)
             : base(pictureRepository,
                 settingService,
@@ -75,7 +77,7 @@ namespace Grand.Services.Media
 
             //Cloudfront distribution
             _distributionDomainName = _config.AmazonDistributionDomainName;
-
+            _qrCodeGenerator = new QRCodeGenerator();
         }
 
         #endregion

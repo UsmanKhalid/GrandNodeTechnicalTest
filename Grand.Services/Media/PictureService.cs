@@ -45,6 +45,7 @@ namespace Grand.Services.Media
         private readonly IStoreContext _storeContext;
         private readonly ICacheBase _cacheBase;
         private readonly MediaSettings _mediaSettings;
+        private readonly QRCodeGenerator _qrCodeGenerator;
 
         #endregion
 
@@ -68,7 +69,8 @@ namespace Grand.Services.Media
             IWebHostEnvironment hostingEnvironment,
             IStoreContext storeContext,
             ICacheBase cacheManager,
-            MediaSettings mediaSettings)
+            MediaSettings mediaSettings
+            )
         {
             _pictureRepository = pictureRepository;
             _settingService = settingService;
@@ -78,6 +80,7 @@ namespace Grand.Services.Media
             _storeContext = storeContext;
             _cacheBase = cacheManager;
             _mediaSettings = mediaSettings;
+            _qrCodeGenerator = new QRCodeGenerator ();
         }
 
         #endregion
@@ -847,9 +850,8 @@ namespace Grand.Services.Media
         }
          
        public virtual byte[] GetQRCodePictureFromPattern(string qrCodePattern)
-        {
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrCodePattern, QRCodeGenerator.ECCLevel.L);
+        {            
+            QRCodeData qrCodeData = _qrCodeGenerator.CreateQrCode(qrCodePattern, QRCodeGenerator.ECCLevel.L);
             QRCode qrCode = new QRCode(qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(20);
             return ImageToByte(qrCodeImage);
